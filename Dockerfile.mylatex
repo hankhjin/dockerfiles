@@ -1,0 +1,23 @@
+FROM debian:latest
+
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+
+RUN apt-get update --fix-missing && apt-get install -y wget bzip2 ca-certificates \
+    libglib2.0-0 libxext6 libsm6 libxrender1 \
+    git mercurial subversion build-essential libfontconfig1 sudo vim
+
+# Install TexLive with scheme-full
+RUN wget http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz; \
+    mkdir /install-tl-unx; \
+    tar -xvf install-tl-unx.tar.gz -C /install-tl-unx --strip-components=1; \
+    echo "selected_scheme scheme-full" >> /install-tl-unx/texlive.profile; \
+    /install-tl-unx/install-tl -profile /install-tl-unx/texlive.profile; \
+    rm -r /install-tl-unx; \
+    rm install-tl-unx.tar.gz
+
+RUN useradd -ms /bin/bash docker && echo "docker:docker" | chpasswd && adduser docker sudo
+USER docker
+WORKDIR /home/docker
+ENV PATH="/usr/local/texlive/2018/bin/x86_64-linux:${PATH}"
+RUN echo 'alias la="ls -alhGtr"' >> ~/.bashrc
+RUN wget https://raw.githubusercontent.com/hankhjin/dotfiles/master/my_latex_settings.tex
