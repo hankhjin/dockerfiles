@@ -8,6 +8,7 @@
     - Jupyter connection password is `docker`
 
 * `Dockerfile.mylatex`
+    - Modifies [Benedikt Lang's latex-docker](https://github.com/blang/latex-docker)
     - Builds on `debian:latest`
     - Downloads and installs `texlive 2018` with scheme-full
     - Creates a default `sudo group` user `docker`
